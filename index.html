@@ -6,15 +6,9 @@
     <title>RyFn 伺服器控制面板</title>
     <style>
         body { 
-            background-color: #000; 
-            color: #fff; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            height: 100vh; 
-            margin: 0;
-            /* 邊框紫色霓虹流動效果 */
+            background-color: #000; color: #fff; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            height: 100vh; margin: 0;
             border: 8px solid #8a2be2;
             box-shadow: inset 0 0 20px #8a2be2, 0 0 20px #8a2be2;
             animation: neon 2s infinite alternate;
@@ -23,30 +17,33 @@
             from { box-shadow: inset 0 0 10px #8a2be2, 0 0 10px #8a2be2; }
             to { box-shadow: inset 0 0 30px #ff00ff, 0 0 30px #ff00ff; }
         }
-        .card {
-            background: rgba(20, 20, 20, 0.9);
-            padding: 40px;
-            border-radius: 20px;
-            border: 2px solid #8a2be2;
-            text-align: center;
-        }
-        .btn {
-            background: transparent;
-            color: #fff;
-            border: 2px solid #8a2be2;
-            padding: 15px 35px;
-            font-size: 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 0 0 15px #8a2be2;
-        }
+        .card { background: rgba(20, 20, 20, 0.9); padding: 40px; border-radius: 20px; border: 2px solid #8a2be2; text-align: center; }
+        .btn { background: transparent; color: #fff; border: 2px solid #8a2be2; padding: 15px 35px; border-radius: 10px; cursor: pointer; box-shadow: 0 0 15px #8a2be2; }
     </style>
 </head>
 <body>
     <div class="card">
         <h1>RyFn 伺服器控制台</h1>
-        <p>目前的狀態：<span style="color: #ff4444;">離線</span></p>
-        <button class="btn" onclick="alert('正在嘗試喚醒雲端主機...')">啟動伺服器</button>
+        <p>目前的狀態：<span id="status" style="color: #8a2be2;">準備就緒</span></p>
+        <button class="btn" onclick="startServer()">啟動伺服器</button>
     </div>
+
+    <script>
+        function startServer() {
+            const statusText = document.getElementById('status');
+            statusText.innerText = "正在喚醒雲端主機...";
+            const url = "https://4ab0dce8-84a6-46a2-82a4-7a2002176498-00-1bneupvvphh8k.kirk.replit.dev/start";
+
+            fetch(url)
+                .then(() => {
+                    alert("啟動信號已送達！");
+                    statusText.innerText = "運行中";
+                    statusText.style.color = "#00ff00";
+                })
+                .catch(() => {
+                    alert("連線失敗，請檢查 Replit 是否在 Run！");
+                });
+        }
+    </script>
 </body>
 </html>
