@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RyFn 伺服器控制面板</title>
+    <style>
+        body { 
+            background-color: #000; 
+            color: #fff; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            margin: 0;
+            /* 邊框紫色霓虹流動效果 */
+            border: 8px solid #8a2be2;
+            box-shadow: inset 0 0 20px #8a2be2, 0 0 20px #8a2be2;
+            animation: neon 2s infinite alternate;
+        }
+        @keyframes neon {
+            from { box-shadow: inset 0 0 10px #8a2be2, 0 0 10px #8a2be2; }
+            to { box-shadow: inset 0 0 30px #ff00ff, 0 0 30px #ff00ff; }
+        }
+        .card {
+            background: rgba(20, 20, 20, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid #8a2be2;
+            text-align: center;
+        }
+        .btn {
+            background: transparent;
+            color: #fff;
+            border: 2px solid #8a2be2;
+            padding: 15px 35px;
+            font-size: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 0 15px #8a2be2;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>RyFn 伺服器控制台</h1>
+        <p>目前的狀態：<span style="color: #ff4444;">離線</span></p>
+        <button class="btn" onclick="alert('正在嘗試喚醒雲端主機...')">啟動伺服器</button>
+    </div>
+</body>
+</html>
