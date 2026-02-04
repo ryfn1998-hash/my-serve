@@ -2,76 +2,114 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>RyFn 伺服器核心控制台</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RyFn 核心控制台</title>
     <style>
         body {
             background-color: #0d0213;
             color: #bc13fe;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Segoe UI', '微軟正黑體', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            overflow: hidden;
         }
         /* 紫色霓虹流光邊框 */
-        .neon-border {
+        .neon-box {
             position: relative;
-            width: 85%;
-            height: 80%;
+            width: 90%;
+            max-width: 600px;
             background: #1a0525;
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 0 25px #bc13fe;
+            box-shadow: 0 0 20px #bc13fe;
             border: 2px solid #bc13fe;
         }
         #console {
-            background: rgba(0, 0, 0, 0.8);
-            height: 70%;
+            background: rgba(0, 0, 0, 0.85);
+            height: 250px;
             overflow-y: auto;
             padding: 15px;
             border: 1px solid #5b0bb5;
             color: #39ff14;
-            font-size: 14px;
-            line-height: 1.6;
+            font-family: monospace;
+            margin: 20px 0;
+            border-radius: 5px;
         }
-        .status-tag {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px #bc13fe;
+        .controls { display: flex; gap: 10px; }
+        input {
+            background: #2a0a3d;
+            border: 1px solid #bc13fe;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            flex-grow: 1;
         }
+        button {
+            background: #bc13fe;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover { background: #ff00ff; box-shadow: 0 0 10px #ff00ff; }
+        .status { margin-bottom: 10px; font-size: 0.9em; }
     </style>
 </head>
 <body>
-    <div class="neon-border">
-        <div class="status-tag">🛸 系統狀態：<span id="state">正在連接大腦...</span></div>
-        <div id="console">> 初始化通訊協議...<br></div>
+
+<div class="neon-box">
+    <h2 style="margin:0 0 15px 0;">🛸 RyFn 核心系統</h2>
+    <div class="status">連線狀態：<span id="state">連線中...</span></div>
+    
+    <div id="console">> 初始化通訊中...</div>
+
+    <div class="controls">
+        <input type="password" id="pw" placeholder="輸入啟動密碼">
+        <button onclick="sendStart()">🚀 啟動</button>
     </div>
+</div>
 
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-    <script>
-        // 這是你的 Replit 連線網址
-        const REPL_URL = "https://server-starter--ryfn1998.repl.co";
-        const socket = io(REPL_URL);
-        const stateDisplay = document.getElementById('state');
-        const consoleDisplay = document.getElementById('console');
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+    const REPL_URL = "https://server-starter--ryfn1998.repl.co";
+    const socket = io(REPL_URL);
+    const consoleEl = document.getElementById('console');
+    const stateEl = document.getElementById('state');
 
-        socket.on('connect', () => {
-            stateDisplay.innerText = "● 在線 (已成功對接)";
-            stateDisplay.style.color = "#39ff14";
-            consoleDisplay.innerHTML += "<div>[系統] 成功連線至 Replit 核心。</div>";
+    socket.on('connect', () => {
+        stateEl.innerText = "● 在線 (已對接)";
+        stateEl.style.color = "#39ff14";
+        addLog("系統連線成功。");
+    });
+
+    socket.on('disconnect', () => {
+        stateEl.innerText = "● 離線 (大腦休眠)";
+        stateEl.style.color = "red";
+    });
+
+    socket.on('log', (msg) => {
+        addLog(msg);
+    });
+
+    function addLog(msg) {
+        consoleEl.innerHTML += `<div>> ${msg}</div>`;
+        consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+
+    function sendStart() {
+        const password = document.getElementById('pw').value;
+        if (!password) return alert("請輸入密碼！");
+        
+        socket.emit('admin_command', {
+            cmd: 'start_server',
+            password: password
         });
-
-        socket.on('log', (msg) => {
-            consoleDisplay.innerHTML += `<div>> ${msg}</div>`;
-            consoleDisplay.scrollTop = consoleDisplay.scrollHeight;
-        });
-
-        socket.on('disconnect', () => {
-            stateDisplay.innerText = "● 離線 (大腦休眠中)";
-            stateDisplay.style.color = "red";
-        });
-    </script>
+        addLog("正在傳送啟動請求...");
+    }
+</script>
 </body>
 </html>
