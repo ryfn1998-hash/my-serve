@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RyFn 伺服器核心控制台</title>
+    <title>RyFn 私人中央控制面板</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <style>
         :root {
-            --neon-color: #bc13fe;
-            --bg-dark: #0d0213;
+            --neon-purple: #bc13fe;
+            --neon-blue: #08f7fe;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--neon-color);
-            font-family: 'Segoe UI', '微軟正黑體', sans-serif;
+            background-color: #0a0a0a;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -22,44 +23,124 @@
             overflow: hidden;
         }
 
-        /* 紫色霓虹流光邊框容器 */
-        .neon-container {
+        /* 紫色霓虹流動邊框控制項 [cite: 2026-01-03] */
+        .login-container {
             position: relative;
-            width: 90%;
-            max-width: 600px;
-            height: 80vh;
-            background: #1a0525;
-            padding: 30px;
+            width: 400px;
+            padding: 40px;
+            background: rgba(20, 20, 20, 0.9);
             border-radius: 15px;
-            box-shadow: 0 0 25px var(--neon-color);
-            display: flex;
-            flex-direction: column;
+            text-align: center;
             z-index: 1;
-            border: 2px solid var(--neon-color);
         }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(188, 19, 254, 0.5);
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+        /* 流光效果 [cite: 2026-01-03] */
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, var(--neon-purple), transparent, var(--neon-purple));
+            background-size: 400%;
+            border-radius: 17px;
+            z-index: -1;
+            animation: neonFlow 3s linear infinite;
+            filter: blur(5px);
         }
 
-        .status-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 8px;
-            background-color: #ff4444; 
-            box-shadow: 0 0 10px #ff4444;
+        @keyframes neonFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
 
-        .online { background-color: #39ff14; box-shadow: 0 0 10px #39ff14; }
+        h2 { color: var(--neon-purple); text-shadow: 0 0 10px var(--neon-purple); }
 
-        /* 終端機顯示區 */
-        #console {
-            flex-grow: 1;
-            background: rgba(0, 0, 0, 0.
+        .status-box {
+            background: #000;
+            border: 1px solid #333;
+            padding: 10px;
+            margin: 20px 0;
+            height: 100px;
+            overflow-y: auto;
+            font-size: 12px;
+            text-align: left;
+            color: #00ff00;
+        }
+
+        button {
+            background: transparent;
+            border: 2px solid var(--neon-purple);
+            color: var(--neon-purple);
+            padding: 10px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+            border-radius: 5px;
+            text-shadow: 0 0 5px var(--neon-purple);
+            box-shadow: inset 0 0 5px var(--neon-purple);
+        }
+
+        button:hover {
+            background: var(--neon-purple);
+            color: white;
+            box-shadow: 0 0 20px var(--neon-purple);
+        }
+
+        button:disabled {
+            border-color: #555;
+            color: #555;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <h2>🛸 RyFn 核心系統</h2>
+    <div id="log" class="status-box">● 正在偵測大腦頻率...</div>
+    <button id="startBtn" onclick="sendStart()" disabled>啟動伺服器</button>
+</div>
+
+<script>
+    // 這裡是你剛才給我的 Replit 核心網址
+    const REPL_URL = "https://4ab0dce8-84a6-46a2-82a4-7a2002176498-00-1bneupvvphh8k.kirk.replit.dev";
+
+    const logDiv = document.getElementById('log');
+    const startBtn = document.getElementById('startBtn');
+
+    function addLog(msg) {
+        const p = document.createElement('div');
+        p.textContent = msg;
+        logDiv.appendChild(p);
+        logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    // 初始化 Socket 連線
+    const socket = io(REPL_URL);
+
+    socket.on('connect', () => {
+        addLog("● 中央大腦連線成功。");
+        addLog("● 私人安全通道已開啟。");
+        startBtn.disabled = false;
+    });
+
+    socket.on('connect_error', (err) => {
+        addLog("❌ 連線失敗：大腦未響應。");
+        startBtn.disabled = true;
+    });
+
+    function sendStart() {
+        addLog(">> 發送啟動指令...");
+        socket.emit('start_server_cmd'); // 對應 index.js 的接收名稱
+        startBtn.disabled = true;
+        setTimeout(() => { startBtn.disabled = false; }, 5000);
+    }
+
+    // 接收來自大腦的日誌回傳
+    socket.on('server_log', (data) => {
+        addLog("系統消息: " + data.msg);
+    });
+</script>
+
+</body>
+</html>
