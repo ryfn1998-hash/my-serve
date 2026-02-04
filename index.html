@@ -2,48 +2,76 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RyFn 伺服器控制面板</title>
+    <title>RyFn 伺服器核心控制台</title>
     <style>
-        body { 
-            background-color: #000; color: #fff; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            height: 100vh; margin: 0;
-            border: 8px solid #8a2be2;
-            box-shadow: inset 0 0 20px #8a2be2, 0 0 20px #8a2be2;
-            animation: neon 2s infinite alternate;
+        body {
+            background-color: #0d0213;
+            color: #bc13fe;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
         }
-        @keyframes neon {
-            from { box-shadow: inset 0 0 10px #8a2be2, 0 0 10px #8a2be2; }
-            to { box-shadow: inset 0 0 30px #ff00ff, 0 0 30px #ff00ff; }
+        /* 紫色霓虹流光邊框 */
+        .neon-border {
+            position: relative;
+            width: 85%;
+            height: 80%;
+            background: #1a0525;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 25px #bc13fe;
+            border: 2px solid #bc13fe;
         }
-        .card { background: rgba(20, 20, 20, 0.9); padding: 40px; border-radius: 20px; border: 2px solid #8a2be2; text-align: center; }
-        .btn { background: transparent; color: #fff; border: 2px solid #8a2be2; padding: 15px 35px; border-radius: 10px; cursor: pointer; box-shadow: 0 0 15px #8a2be2; }
+        #console {
+            background: rgba(0, 0, 0, 0.8);
+            height: 70%;
+            overflow-y: auto;
+            padding: 15px;
+            border: 1px solid #5b0bb5;
+            color: #39ff14;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .status-tag {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #bc13fe;
+        }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>RyFn 伺服器控制台</h1>
-        <p>目前的狀態：<span id="status" style="color: #8a2be2;">準備就緒</span></p>
-        <button class="btn" onclick="startServer()">啟動伺服器</button>
+    <div class="neon-border">
+        <div class="status-tag">🛸 系統狀態：<span id="state">正在連接大腦...</span></div>
+        <div id="console">> 初始化通訊協議...<br></div>
     </div>
 
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script>
-        function startServer() {
-            const statusText = document.getElementById('status');
-            statusText.innerText = "正在喚醒雲端主機...";
-            const url = "https://4ab0dce8-84a6-46a2-82a4-7a2002176498-00-1bneupvvphh8k.kirk.replit.dev/start";
+        // 這是你的 Replit 連線網址
+        const REPL_URL = "https://server-starter--ryfn1998.repl.co";
+        const socket = io(REPL_URL);
+        const stateDisplay = document.getElementById('state');
+        const consoleDisplay = document.getElementById('console');
 
-            fetch(url)
-                .then(() => {
-                    alert("啟動信號已送達！");
-                    statusText.innerText = "運行中";
-                    statusText.style.color = "#00ff00";
-                })
-                .catch(() => {
-                    alert("連線失敗，請檢查 Replit 是否在 Run！");
-                });
-        }
+        socket.on('connect', () => {
+            stateDisplay.innerText = "● 在線 (已成功對接)";
+            stateDisplay.style.color = "#39ff14";
+            consoleDisplay.innerHTML += "<div>[系統] 成功連線至 Replit 核心。</div>";
+        });
+
+        socket.on('log', (msg) => {
+            consoleDisplay.innerHTML += `<div>> ${msg}</div>`;
+            consoleDisplay.scrollTop = consoleDisplay.scrollHeight;
+        });
+
+        socket.on('disconnect', () => {
+            stateDisplay.innerText = "● 離線 (大腦休眠中)";
+            stateDisplay.style.color = "red";
+        });
     </script>
 </body>
 </html>
