@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RyFn 核心控制系統</title>
     <style>
-        /* 紫色霓虹流光邊框設計 */
+        /* 深度黑色背景搭配紫色霓虹流光 */
         body {
             background-color: #0b0b0b;
             display: flex;
@@ -15,65 +15,87 @@
             margin: 0;
             font-family: "Microsoft JhengHei", sans-serif;
             color: white;
+            overflow: hidden;
         }
 
         .container {
             position: relative;
             padding: 40px;
-            background: #1a1a1a;
-            border-radius: 15px;
+            background: rgba(26, 26, 26, 0.9);
+            border-radius: 20px;
             text-align: center;
-            width: 350px;
-            /* 霓虹邊框效果 */
-            box-shadow: 0 0 20px #8a2be2, inset 0 0 10px #8a2be2;
+            width: 380px;
+            /* 紫色流光邊框設計 [cite: 2026-01-03] */
+            box-shadow: 0 0 30px #8a2be2, inset 0 0 15px #8a2be2;
             border: 2px solid #a020f0;
+            transition: transform 0.3s;
+        }
+
+        .container:hover {
+            transform: scale(1.02);
         }
 
         h1 {
             color: #d8b4fe;
-            text-shadow: 0 0 10px #a020f0;
-            margin-bottom: 20px;
+            text-shadow: 0 0 15px #a020f0;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
         }
 
         .status-box {
             background: #000;
             padding: 15px;
-            border-radius: 5px;
-            font-family: monospace;
-            font-size: 14px;
-            margin-bottom: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            margin-bottom: 25px;
             border: 1px solid #444;
-            min-height: 80px;
+            height: 120px;
+            overflow-y: auto;
             text-align: left;
+            line-height: 1.6;
         }
 
         .btn-start {
             background: transparent;
             color: #d8b4fe;
             border: 2px solid #d8b4fe;
-            padding: 12px 30px;
-            font-size: 18px;
-            border-radius: 8px;
+            padding: 15px 40px;
+            font-size: 20px;
+            border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s;
-            text-shadow: 0 0 5px #d8b4fe;
+            transition: all 0.4s;
+            text-shadow: 0 0 8px #d8b4fe;
+            font-weight: bold;
         }
 
-        .btn-start:hover {
+        .btn-start:hover:not(:disabled) {
             background: #a020f0;
             color: white;
-            box-shadow: 0 0 20px #a020f0;
+            box-shadow: 0 0 25px #a020f0;
+            border-color: #a020f0;
         }
 
         .btn-start:disabled {
-            border-color: #666;
+            border-color: #444;
             color: #666;
-            cursor: not-allowed;
+            cursor: wait;
+            text-shadow: none;
         }
 
+        /* 狀態文字顏色 */
         .log-success { color: #4ade80; }
-        .log-error { color: #f87171; }
-        .log-info { color: #60a5fa; }
+        .log-error { color: #ff4d4d; }
+        .log-info { color: #a78bfa; }
+        .log-blink { animation: blink 1s infinite; }
+
+        @keyframes blink {
+            50% { opacity: 0.5; }
+        }
+
+        /* 捲軸美化 */
+        .status-box::-webkit-scrollbar { width: 5px; }
+        .status-box::-webkit-scrollbar-thumb { background: #a020f0; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -82,7 +104,7 @@
         <h1>🛸 RyFn 核心系統</h1>
         
         <div class="status-box" id="console">
-            <div class="log-info">● 正在初始化系統...</div>
+            <div class="log-info">● 正在接入 RyFn 雲端鏈路...</div>
         </div>
 
         <button class="btn-start" id="startBtn">啟動伺服器</button>
@@ -92,8 +114,8 @@
         const consoleEl = document.getElementById('console');
         const startBtn = document.getElementById('startBtn');
 
-        // 這是你專屬的 Replit 大腦網址
-        const REPLIT_URL = "https://server-starter--ryfn1998.replit.app/start-server";
+        // 💡 這是你唯一的 Replit 地址
+        const BASE_URL = "https://server-starter--ryfn1998.replit.app";
 
         function addLog(text, type) {
             const div = document.createElement('div');
@@ -103,31 +125,37 @@
             consoleEl.scrollTop = consoleEl.scrollHeight;
         }
 
-        // 頁面加載時先檢查大腦是否醒著
-        window.onload = () => {
-            addLog("正在偵測大腦頻率...", "log-info");
-            setTimeout(() => addLog("大腦連線成功，準備就緒。", "log-success"), 1000);
-        };
+        // 初始化檢查大腦狀態
+        async function checkBrain() {
+            try {
+                const res = await fetch(BASE_URL, { mode: 'no-cors' });
+                addLog("大腦連線成功，準備就緒。", "log-success");
+            } catch (e) {
+                addLog("連線失敗：大腦未響應。", "log-error");
+                addLog("請檢查 Replit 是否按下 Run。", "log-error");
+            }
+        }
+
+        window.onload = checkBrain;
 
         startBtn.onclick = async () => {
             startBtn.disabled = true;
-            addLog("傳送啟動指令中...", "log-info");
+            addLog("正在發送喚醒頻率...", "log-info");
 
             try {
-                // 發送請求給 Replit
-                const response = await fetch(REPLIT_URL);
+                // 發送啟動請求到 Replit
+                const response = await fetch(`${BASE_URL}/start-server`);
                 
                 if (response.ok) {
-                    addLog("指令已送達！伺服器開機中。", "log-success");
-                    addLog("請等待 1-2 分鐘後連入。", "log-success");
+                    addLog("指令已送達！伺服器啟動中。", "log-success");
+                    addLog("進度：FalixNodes 已接管。", "log-info");
                 } else {
                     throw new Error();
                 }
             } catch (error) {
-                addLog("連線失敗：大腦未響應。", "log-error");
-                addLog("請檢查 Replit 是否按下了 Run。", "log-error");
+                addLog("指令中斷：連線超時。", "log-error");
+                addLog("請至 Replit 確認 Console 訊息。", "log-error");
             } finally {
-                // 5 秒後恢復按鈕
                 setTimeout(() => { startBtn.disabled = false; }, 5000);
             }
         };
