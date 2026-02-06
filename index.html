@@ -2,39 +2,128 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>RyFn 伺服器控制中心</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星河伺服器控制台</title>
+    <link href="https://fonts.cdnfonts.com/css/minecraftia" rel="stylesheet">
     <style>
-        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; padding-top: 50px; }
-        .btn { 
-            padding: 20px 40px; font-size: 24px; cursor: pointer; 
-            background: #8a2be2; color: white; border: none; border-radius: 10px;
-            box-shadow: 0 0 15px #8a2be2; transition: 0.3s;
+        body {
+            background-color: #1e1e1e; /* 深灰色背景 */
+            color: #AAAAAA; /* 經典 MC 灰色字體 */
+            font-family: 'Minecraftia', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            image-rendering: pixelated;
         }
-        .btn:hover { box-shadow: 0 0 30px #d8bfd8; transform: scale(1.05); }
-        #status { margin-top: 20px; color: #aaa; }
+
+        h1 {
+            color: #FFFFFF;
+            text-shadow: 4px 4px #3F3F3F;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            background-color: #C6C6C6; /* 經典 MC 選單灰色 */
+            border: 4px solid #000000;
+            border-top-color: #FFFFFF;
+            border-left-color: #FFFFFF;
+            border-right-color: #555555;
+            border-bottom-color: #555555;
+            padding: 40px;
+            width: 350px;
+            text-align: center;
+        }
+
+        .status-box {
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+        }
+
+        #status-text {
+            color: #55FF55; /* 綠色代表開放 */
+            text-shadow: 2px 2px #003F00;
+        }
+
+        /* Minecraft 經典按鈕樣式 */
+        .mc-button {
+            background-color: #6E6E6E;
+            border: 2px solid #000000;
+            border-top-color: #FFFFFF;
+            border-left-color: #FFFFFF;
+            border-right-color: #333333;
+            border-bottom-color: #333333;
+            color: #E0E0E0;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 100%;
+            font-family: 'Minecraftia', sans-serif;
+            transition: all 0.1s;
+        }
+
+        .mc-button:hover {
+            background-color: #7E7E7E;
+            color: #FFFF55; /* 黃色高亮 */
+        }
+
+        .mc-button:active {
+            border-top-color: #333333;
+            border-left-color: #333333;
+            border-right-color: #FFFFFF;
+            border-bottom-color: #FFFFFF;
+            padding-top: 17px;
+            padding-bottom: 13px;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #555555;
+        }
     </style>
 </head>
 <body>
-    <h1>RyFn 伺服器啟動器</h1>
-    <button class="btn" onclick="startServer()">🚀 點擊啟動伺服器</button>
-    <div id="status">準備就緒</div>
+
+    <h1>星河伺服器</h1>
+
+    <div class="container">
+        <div class="status-box">
+            數據開放狀態: <span id="status-text">伺服器已就緒</span>
+        </div>
+
+        <button class="mc-button" onclick="launchServer()">啟動伺服器</button>
+    </div>
+
+    <div class="footer">系統版本: V4.0 (繞路修正版)</div>
 
     <script>
-        async function startServer() {
-            const statusDiv = document.getElementById('status');
-            statusDiv.innerText = "正在發送請求...";
+        async function launchServer() {
+            const btn = document.querySelector('.mc-button');
+            const status = document.getElementById('status-text');
             
+            // 變更按鈕外觀代表已點擊
+            btn.innerText = "傳送請求中...";
+            btn.style.color = "#AAAAAA";
+            btn.disabled = true;
+
             try {
-                // 直接呼叫 FalixNodes 的 API
-                const response = await fetch("https://client.falixnodes.net/server/2612801/start", {
-                    mode: 'no-cors' // 💡 繞過瀏覽器的安全性限制
+                // 直接請求 FalixNodes
+                await fetch("https://client.falixnodes.net/server/2612801/start", {
+                    mode: 'no-cors'
                 });
-                
-                statusDiv.innerText = "✅ 指令已送出！請稍後 1-2 分鐘進入遊戲。";
-                statusDiv.style.color = "#00ff00";
-            } catch (e) {
-                statusDiv.innerText = "❌ 失敗：請檢查網路或 FalixNodes 連結。";
-                statusDiv.style.color = "#ff0000";
+
+                status.innerText = "已發送啟動指令";
+                status.style.color = "#FFFF55";
+                btn.innerText = "指令已送出";
+            } catch (error) {
+                status.innerText = "連線失敗";
+                status.style.color = "#FF5555";
+                btn.innerText = "重試啟動";
+                btn.disabled = false;
             }
         }
     </script>
