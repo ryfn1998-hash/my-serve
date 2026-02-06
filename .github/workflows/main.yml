@@ -1,17 +1,14 @@
-name: Auto Start Falix Server
+name: Auto Start via Falix Link
 
 on:
   repository_dispatch:
     types: [start-command]
 
 jobs:
-  start_server:
+  ping_falix:
     runs-on: ubuntu-latest
     steps:
-      - name: Send Start Signal to Falix
+      - name: Open Falix Start Link
         run: |
-          curl -X POST "https://client.falixnodes.net/api/client/servers/你的伺服器ID/power" \
-          -H "Authorization: Bearer ${{ secrets.FALIX_TOKEN }}" \
-          -H "Content-Type: application/json" \
-          -H "Accept: application/json" \
-          -d '{"signal": "start"}'
+          # 模擬瀏覽器打開你的直達連結
+          curl -L "https://falixnodes.net/startserver?ip=ryfn.falix.gg"
