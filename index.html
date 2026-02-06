@@ -7,11 +7,11 @@
     <link href="https://fonts.cdnfonts.com/css/minecraftia" rel="stylesheet">
     <style>
         body {
-            /* 💡 這裡使用了麥塊風格的風景背景圖 */
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
-                        url('https://wallpaperaccess.com/full/112668.jpg');
-            background-size: cover;
-            background-position: center;
+            /* 💡 使用麥塊經典泥土紋路背景 */
+            background: #5c3a21 url('https://www.minecraft.net/etc.clientlibs/minecraft/clientlibs/main/resources/img/dirt.png');
+            background-repeat: repeat;
+            background-size: 64px;
+            image-rendering: pixelated; /* 讓像素保持清晰不模糊 */
             color: #AAAAAA;
             font-family: 'Minecraftia', sans-serif;
             display: flex;
@@ -20,7 +20,6 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            overflow: hidden;
         }
 
         h1 {
@@ -31,27 +30,27 @@
         }
 
         .container {
-            background-color: rgba(198, 198, 198, 0.9); /* 半透明經典灰色 */
+            background-color: #C6C6C6; /* 經典麥塊灰色選單背景 */
             border: 4px solid #000;
             border-top-color: #FFF;
             border-left-color: #FFF;
             border-right-color: #555;
             border-bottom-color: #555;
             padding: 40px;
-            width: 350px;
+            width: 320px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 0px rgba(0,0,0,0.4);
         }
 
         .status-box {
             margin-bottom: 30px;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #333;
         }
 
         #status-text {
             color: #00AA00;
-            text-shadow: 1px 1px #AAFFAA;
+            font-weight: bold;
         }
 
         .mc-button {
@@ -62,11 +61,12 @@
             border-right-color: #333;
             border-bottom-color: #333;
             color: #E0E0E0;
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 15px;
+            font-size: 1.1rem;
             cursor: pointer;
             width: 100%;
             font-family: 'Minecraftia', sans-serif;
+            margin-bottom: 15px; /* 與下方版本字樣保持距離 */
         }
 
         .mc-button:hover {
@@ -79,13 +79,16 @@
             border-left-color: #333;
             border-right-color: #FFF;
             border-bottom-color: #FFF;
+            padding-top: 17px;
+            padding-bottom: 13px;
         }
-        
-        .version {
-            margin-top: 20px;
+
+        /* 🚀 衛星連線版本字樣樣式 */
+        .version-tag {
+            color: #FFFFFF;
             font-size: 0.8rem;
-            color: #FFF;
-            text-shadow: 1px 1px #000;
+            text-shadow: 2px 2px #000;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -99,22 +102,22 @@
         </div>
 
         <button class="mc-button" onclick="launchServer()">啟動伺服器</button>
+        
+        <div class="version-tag">系統版本：V5.0 (GitHub 衛星連線)</div>
     </div>
-
-    <div class="version">系統版本：V5.0 (GitHub 衛星連線)</div>
 
     <script>
         async function launchServer() {
             const btn = document.querySelector('.mc-button');
             const status = document.getElementById('status-text');
             
-            btn.innerText = "傳送請求中...";
+            btn.innerText = "連線中...";
             btn.disabled = true;
 
-            // 💡 這裡記得填入你自己的資訊
+            // 💡 請確認你的 GitHub 帳號
             const OWNER = "ryfn1998-hash"; 
             const REPO = "my-serve";
-            const TOKEN = "你的GitHub_Token"; 
+            const TOKEN = "這裡貼上你的_GitHub_Token"; 
 
             try {
                 const response = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/dispatches`, {
@@ -127,14 +130,14 @@
                 });
 
                 if (response.ok) {
-                    status.innerText = "啟動指令已送出";
+                    status.innerText = "指令已送達";
                     status.style.color = "#FFFF55";
-                    btn.innerText = "啟動成功！";
+                    btn.innerText = "啟動中";
                 } else {
                     throw new Error();
                 }
             } catch (error) {
-                status.innerText = "連線失敗";
+                status.innerText = "連線超時";
                 status.style.color = "#FF5555";
                 btn.innerText = "重試啟動";
                 btn.disabled = false;
