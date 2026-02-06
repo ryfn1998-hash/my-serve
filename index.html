@@ -7,8 +7,8 @@
     <link href="https://fonts.cdnfonts.com/css/minecraftia" rel="stylesheet">
     <style>
         body {
-            background-color: #1e1e1e; /* 深灰色背景 */
-            color: #AAAAAA; /* 經典 MC 灰色字體 */
+            background-color: #1a1a1a;
+            color: #AAAAAA;
             font-family: 'Minecraftia', sans-serif;
             display: flex;
             flex-direction: column;
@@ -16,114 +16,50 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            image-rendering: pixelated;
         }
-
-        h1 {
-            color: #FFFFFF;
-            text-shadow: 4px 4px #3F3F3F;
-            font-size: 2.5rem;
-            margin-bottom: 30px;
-        }
-
+        h1 { color: #FFFFFF; text-shadow: 3px 3px #3F3F3F; margin-bottom: 20px; }
         .container {
-            background-color: #C6C6C6; /* 經典 MC 選單灰色 */
-            border: 4px solid #000000;
-            border-top-color: #FFFFFF;
-            border-left-color: #FFFFFF;
-            border-right-color: #555555;
-            border-bottom-color: #555555;
-            padding: 40px;
-            width: 350px;
-            text-align: center;
+            background-color: #C6C6C6;
+            border: 4px solid #000;
+            border-top-color: #FFF; border-left-color: #FFF;
+            border-right-color: #555; border-bottom-color: #555;
+            padding: 30px; width: 320px; text-align: center;
         }
-
-        .status-box {
-            margin-bottom: 30px;
-            font-size: 1.2rem;
-        }
-
-        #status-text {
-            color: #55FF55; /* 綠色代表開放 */
-            text-shadow: 2px 2px #003F00;
-        }
-
-        /* Minecraft 經典按鈕樣式 */
+        .status-box { margin-bottom: 20px; font-size: 1rem; color: #333; }
+        #status-text { color: #00AA00; font-weight: bold; }
         .mc-button {
             background-color: #6E6E6E;
-            border: 2px solid #000000;
-            border-top-color: #FFFFFF;
-            border-left-color: #FFFFFF;
-            border-right-color: #333333;
-            border-bottom-color: #333333;
-            color: #E0E0E0;
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            width: 100%;
-            font-family: 'Minecraftia', sans-serif;
-            transition: all 0.1s;
+            border: 2px solid #000;
+            border-top-color: #FFF; border-left-color: #FFF;
+            border-right-color: #333; border-bottom-color: #333;
+            color: #E0E0E0; padding: 15px; font-size: 1.1rem;
+            cursor: pointer; width: 100%; font-family: 'Minecraftia', sans-serif;
         }
-
-        .mc-button:hover {
-            background-color: #7E7E7E;
-            color: #FFFF55; /* 黃色高亮 */
-        }
-
-        .mc-button:active {
-            border-top-color: #333333;
-            border-left-color: #333333;
-            border-right-color: #FFFFFF;
-            border-bottom-color: #FFFFFF;
-            padding-top: 17px;
-            padding-bottom: 13px;
-        }
-
-        .footer {
-            margin-top: 20px;
-            font-size: 0.8rem;
-            color: #555555;
-        }
+        .mc-button:hover { background-color: #7E7E7E; color: #FFFF55; }
+        .mc-button:active { border-top-color: #333; border-left-color: #333; border-right-color: #FFF; border-bottom-color: #FFF; }
     </style>
 </head>
 <body>
-
     <h1>星河伺服器</h1>
-
     <div class="container">
-        <div class="status-box">
-            數據開放狀態: <span id="status-text">伺服器已就緒</span>
-        </div>
-
-        <button class="mc-button" onclick="launchServer()">啟動伺服器</button>
+        <div class="status-box">數據開放狀態: <span id="status-text">已連線</span></div>
+        <button class="mc-button" onclick="launch()">啟動伺服器</button>
     </div>
-
-    <div class="footer">系統版本: V4.0 (繞路修正版)</div>
-
     <script>
-        async function launchServer() {
+        async function launch() {
             const btn = document.querySelector('.mc-button');
             const status = document.getElementById('status-text');
-            
-            // 變更按鈕外觀代表已點擊
-            btn.innerText = "傳送請求中...";
-            btn.style.color = "#AAAAAA";
-            btn.disabled = true;
-
+            btn.innerText = "傳送中...";
             try {
-                // 直接請求 FalixNodes
-                await fetch("https://client.falixnodes.net/server/2612801/start", {
-                    mode: 'no-cors'
-                });
-
-                status.innerText = "已發送啟動指令";
+                // 💡 直接對準 FalixNodes 網址發送
+                await fetch("https://client.falixnodes.net/server/2612801/start", { mode: 'no-cors' });
+                status.innerText = "指令已發送";
                 status.style.color = "#FFFF55";
-                btn.innerText = "指令已送出";
-            } catch (error) {
+                btn.innerText = "已執行";
+            } catch (e) {
                 status.innerText = "連線失敗";
                 status.style.color = "#FF5555";
-                btn.innerText = "重試啟動";
-                btn.disabled = false;
+                btn.innerText = "再試一次";
             }
         }
     </script>
