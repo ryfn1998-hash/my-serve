@@ -6,13 +6,14 @@
     <title>星河伺服器控制台</title>
     <link href="https://fonts.cdnfonts.com/css/minecraftia" rel="stylesheet">
     <style>
+        /* 禁止選取文字 */
+        * {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
         body {
-            /* 💡 使用麥塊經典泥土紋路背景 */
-            background: #5c3a21 url('https://www.minecraft.net/etc.clientlibs/minecraft/clientlibs/main/resources/img/dirt.png');
-            background-repeat: repeat;
-            background-size: 64px;
-            image-rendering: pixelated; /* 讓像素保持清晰不模糊 */
-            color: #AAAAAA;
+            background-color: #FFFFFF; /* 純白背景 */
             font-family: 'Minecraftia', sans-serif;
             display: flex;
             flex-direction: column;
@@ -20,17 +21,18 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
+            overflow: hidden;
         }
 
         h1 {
-            color: #FFFFFF;
-            text-shadow: 4px 4px #3F3F3F;
+            color: #333333;
+            text-shadow: 2px 2px #DDDDDD;
             font-size: 2.5rem;
             margin-bottom: 20px;
         }
 
         .container {
-            background-color: #C6C6C6; /* 經典麥塊灰色選單背景 */
+            background-color: #C6C6C6; /* 經典麥塊灰色 */
             border: 4px solid #000;
             border-top-color: #FFF;
             border-left-color: #FFF;
@@ -39,7 +41,7 @@
             padding: 40px;
             width: 320px;
             text-align: center;
-            box-shadow: 0 10px 0px rgba(0,0,0,0.4);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
         .status-box {
@@ -66,12 +68,26 @@
             cursor: pointer;
             width: 100%;
             font-family: 'Minecraftia', sans-serif;
-            margin-bottom: 15px; /* 與下方版本字樣保持距離 */
+            display: block;
+            text-decoration: none;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            outline: none;
         }
 
         .mc-button:hover {
             background-color: #7E7E7E;
             color: #FFFF55;
+        }
+
+        .discord-btn {
+            background-color: #5865F2; /* Discord 藍紫色 */
+            margin-bottom: 0;
+        }
+        
+        .discord-btn:hover {
+            background-color: #4752C4;
+            color: #FFFFFF;
         }
 
         .mc-button:active {
@@ -82,19 +98,9 @@
             padding-top: 17px;
             padding-bottom: 13px;
         }
-
-        /* 🚀 衛星連線版本字樣樣式 */
-        .version-tag {
-            color: #FFFFFF;
-            font-size: 0.8rem;
-            text-shadow: 2px 2px #000;
-            margin-top: 10px;
-        }
     </style>
 </head>
-<body>
-
-    <h1>星河伺服器</h1>
+<body oncontextmenu="return false;"> <h1>星河伺服器</h1>
 
     <div class="container">
         <div class="status-box">
@@ -102,22 +108,31 @@
         </div>
 
         <button class="mc-button" onclick="launchServer()">啟動伺服器</button>
-        
-        <div class="version-tag">系統版本：V5.0 (GitHub 衛星連線)</div>
+        <a href="https://discord.gg/3D49QtXgTK" target="_blank" class="mc-button discord-btn">加入 Discord</a>
     </div>
 
     <script>
+        // --- 基礎防護代碼 ---
+        document.onkeydown = function(e) {
+            // 禁用 F12, Ctrl+Shift+I, Ctrl+U (查看原始碼)
+            if(e.keyCode == 123 || 
+               (e.ctrlKey && e.shiftKey && e.keyCode == 73) || 
+               (e.ctrlKey && e.keyCode == 85)) {
+                return false;
+            }
+        };
+
+        // --- 啟動功能 ---
         async function launchServer() {
-            const btn = document.querySelector('.mc-button');
+            const btn = document.querySelector('button.mc-button');
             const status = document.getElementById('status-text');
             
             btn.innerText = "連線中...";
             btn.disabled = true;
 
-            // 💡 請確認你的 GitHub 帳號
-            const OWNER = "ryfn1998-hash"; 
+            const OWNER = "ryfn1998-hash";
             const REPO = "my-serve";
-            const TOKEN = "這裡貼上你的_GitHub_Token"; 
+            const TOKEN = "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";
 
             try {
                 const response = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/dispatches`, {
@@ -131,13 +146,13 @@
 
                 if (response.ok) {
                     status.innerText = "指令已送達";
-                    status.style.color = "#FFFF55";
-                    btn.innerText = "啟動中";
+                    status.style.color = "#0000AA";
+                    btn.innerText = "啟動成功";
                 } else {
                     throw new Error();
                 }
             } catch (error) {
-                status.innerText = "連線超時";
+                status.innerText = "連線失敗";
                 status.style.color = "#FF5555";
                 btn.innerText = "重試啟動";
                 btn.disabled = false;
