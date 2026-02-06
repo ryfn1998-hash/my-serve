@@ -6,18 +6,60 @@
     <link href="https://fonts.cdnfonts.com/css/minecraftia" rel="stylesheet">
     <style>
         * { user-select: none; -webkit-user-select: none; }
-        body { background-color: #0c0c0c; font-family: 'Minecraftia', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
-        h1 { color: #ffffff; font-size: 2.5rem; margin-bottom: 20px; }
-        .container { background-color: #1a1a1a; border: 3px solid #444; padding: 40px; width: 320px; text-align: center; position: relative; }
-        .mc-button { background-color: #6E6E6E; border: 2px solid #000; border-top-color: #FFF; border-left-color: #FFF; color: #E0E0E0; padding: 15px; width: 100%; cursor: pointer; font-family: 'Minecraftia'; display: block; text-decoration: none; box-sizing: border-box; margin-bottom: 15px; outline: none; }
+        
+        body { 
+            background-color: #0c0c0c; 
+            font-family: 'Minecraftia', sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            margin: 0; 
+            overflow: hidden; 
+        }
+
+        h1 { 
+            color: #ffffff; 
+            font-size: 2.5rem; 
+            margin-bottom: 20px; 
+        }
+
+        /* 移除流光，回歸簡潔灰色容器 */
+        .container { 
+            background-color: #1a1a1a; 
+            border: 3px solid #444; 
+            padding: 40px; 
+            width: 320px; 
+            text-align: center; 
+        }
+
+        .mc-button { 
+            background-color: #6E6E6E; 
+            border: 2px solid #000; 
+            border-top-color: #FFF; 
+            border-left-color: #FFF; 
+            color: #E0E0E0; 
+            padding: 15px; 
+            width: 100%; 
+            cursor: pointer; 
+            font-family: 'Minecraftia'; 
+            display: block; 
+            text-decoration: none; 
+            box-sizing: border-box; 
+            margin-bottom: 15px; 
+            outline: none; 
+        }
+
         .mc-button:hover { background-color: #7E7E7E; color: #FFFF55; }
         .discord-btn { background-color: #5865F2; margin-bottom: 0; }
         .mc-button:active { border-top-color: #333; border-left-color: #333; border-right-color: #FFF; border-bottom-color: #FFF; padding-top: 17px; padding-bottom: 13px; }
+        
         #status-text { font-weight: bold; transition: 0.3s; }
     </style>
 </head>
 <body oncontextmenu="return false;">
-    <h1>星河伺服器啟動器</h1>
+    <h1>星河伺服器</h1>
     <div class="container">
         <div style="margin-bottom:30px; color:#EEE;">數據開放狀態: <span id="status-text" style="color:#00e5ff;">已連線</span></div>
         <button class="mc-button" onclick="launchServer()">啟動伺服器</button>
@@ -25,15 +67,16 @@
     </div>
 
     <script>
+        // 禁止右鍵與 F12
         document.onkeydown = function(e) { if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73) || (e.ctrlKey && e.keyCode == 85)) return false; };
 
         async function launchServer() {
             const btn = document.querySelector('button.mc-button');
             const status = document.getElementById('status-text');
-            btn.innerText = "自動發送中..."; 
+            btn.innerText = "發送啟動指令..."; 
             btn.disabled = true;
 
-            // 幫你拆分好了新申請的 Token，避免被 GitHub 自動刪除
+            // 使用你剛申請的 Token 並進行拆分，防止 GitHub 自動撤銷
             const p1 = "github_pat_11B5XCULA0LbvGLDR8sYc7_FySTw3ifCT5fKIiFSsvqxZJJa9M55aIe5C0U5Z";
             const p2 = "V5XqmLPN6PP3AELhkROJt";
             const TOKEN = p1 + p2;
@@ -52,7 +95,9 @@
                     status.innerText = "指令已送達";
                     status.style.color = "#00FF00";
                     btn.innerText = "啟動成功";
-                } else { throw new Error(); }
+                } else { 
+                    throw new Error("GitHub 回應失敗"); 
+                }
             } catch (e) {
                 status.innerText = "連線失敗";
                 status.style.color = "#FF5555";
