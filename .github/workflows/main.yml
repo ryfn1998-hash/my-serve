@@ -1,0 +1,10 @@
+name: StarRiver_AutoStart
+on:
+  repository_dispatch:
+    types: [start-command]
+jobs:
+  start_server:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Falix
+        run: curl -s "${{ secrets.START_URL }}"
