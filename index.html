@@ -6,62 +6,30 @@
     <title>星河伺服器控制台</title>
     <link href="https://fonts.cdnfonts.com/css/minecraftia" rel="stylesheet">
     <style>
-        body {
-            background-color: #1a1a1a;
-            color: #AAAAAA;
-            font-family: 'Minecraftia', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
+        body { background-color: #1a1a1a; color: #AAAAAA; font-family: 'Minecraftia', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
         h1 { color: #FFFFFF; text-shadow: 3px 3px #3F3F3F; margin-bottom: 20px; }
-        .container {
-            background-color: #C6C6C6;
-            border: 4px solid #000;
-            border-top-color: #FFF; border-left-color: #FFF;
-            border-right-color: #555; border-bottom-color: #555;
-            padding: 30px; width: 320px; text-align: center;
-        }
+        .container { background-color: #C6C6C6; border: 4px solid #000; border-top-color: #FFF; border-left-color: #FFF; border-right-color: #555; border-bottom-color: #555; padding: 30px; width: 320px; text-align: center; }
         .status-box { margin-bottom: 20px; font-size: 1rem; color: #333; }
         #status-text { color: #00AA00; font-weight: bold; }
-        .mc-button {
-            background-color: #6E6E6E;
-            border: 2px solid #000;
-            border-top-color: #FFF; border-left-color: #FFF;
-            border-right-color: #333; border-bottom-color: #333;
-            color: #E0E0E0; padding: 15px; font-size: 1.1rem;
-            cursor: pointer; width: 100%; font-family: 'Minecraftia', sans-serif;
-        }
+        .mc-button { background-color: #6E6E6E; border: 2px solid #000; border-top-color: #FFF; border-left-color: #FFF; border-right-color: #333; border-bottom-color: #333; color: #E0E0E0; padding: 15px; font-size: 1.1rem; cursor: pointer; width: 100%; font-family: 'Minecraftia', sans-serif; }
         .mc-button:hover { background-color: #7E7E7E; color: #FFFF55; }
         .mc-button:active { border-top-color: #333; border-left-color: #333; border-right-color: #FFF; border-bottom-color: #FFF; }
     </style>
 </head>
 <body>
+
     <h1>星河伺服器</h1>
+
     <div class="container">
-        <div class="status-box">數據開放狀態: <span id="status-text">已連線</span></div>
-        <button class="mc-button" onclick="launch()">啟動伺服器</button>
+        <div class="status-box">
+            數據開放狀態: <span id="status-text">已連線</span>
+        </div>
+        <a href="https://client.falixnodes.net/server/2612801/start" target="_blank" style="text-decoration: none;">
+            <button class="mc-button">啟動伺服器</button>
+        </a>
     </div>
-    <script>
-        async function launch() {
-            const btn = document.querySelector('.mc-button');
-            const status = document.getElementById('status-text');
-            btn.innerText = "傳送中...";
-            try {
-                // 💡 直接對準 FalixNodes 網址發送
-                await fetch("https://client.falixnodes.net/server/2612801/start", { mode: 'no-cors' });
-                status.innerText = "指令已發送";
-                status.style.color = "#FFFF55";
-                btn.innerText = "已執行";
-            } catch (e) {
-                status.innerText = "連線失敗";
-                status.style.color = "#FF5555";
-                btn.innerText = "再試一次";
-            }
-        }
-    </script>
+
+    <p style="margin-top: 20px; font-size: 0.7rem;">※ 點擊後會開啟 Falix 分頁自動執行開機</p>
+
 </body>
 </html>
