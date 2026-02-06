@@ -9,5 +9,7 @@ jobs:
     steps:
       - name: Trigger Falix
         run: |
-          # 模擬瀏覽器去「點擊」那個分享連結
-          curl -L -A "Mozilla/5.0" "${{ secrets.START_URL }}"
+          # 使用更完整的標頭來模擬真實訪問
+          curl -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+               -e "https://www.google.com" \
+               "${{ secrets.START_URL }}"
