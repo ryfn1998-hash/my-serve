@@ -7,9 +7,7 @@ jobs:
   start_server:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Falix Start
+      - name: Trigger Falix External Start
         run: |
-          # 使用 POST 模式並增加模擬瀏覽器的標頭
-          curl -X POST "${{ secrets.START_URL }}" \
-          -H "Content-Length: 0" \
-          -H "Accept: application/json"
+          # 模擬瀏覽器訪問該開機網址
+          curl -L -A "Mozilla/5.0" "${{ secrets.START_URL }}"
