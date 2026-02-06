@@ -7,7 +7,7 @@ jobs:
   start_server:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Falix External Start
+      - name: Trigger Falix
         run: |
-          # 模擬瀏覽器訪問該開機網址
+          # 模擬瀏覽器去「點擊」那個分享連結
           curl -L -A "Mozilla/5.0" "${{ secrets.START_URL }}"
