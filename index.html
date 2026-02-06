@@ -6,14 +6,87 @@
     <title>星河伺服器控制台</title>
     <link href="https://fonts.cdnfonts.com/css/minecraftia" rel="stylesheet">
     <style>
-        body { background-color: #1a1a1a; color: #AAAAAA; font-family: 'Minecraftia', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        h1 { color: #FFFFFF; text-shadow: 3px 3px #3F3F3F; margin-bottom: 20px; }
-        .container { background-color: #C6C6C6; border: 4px solid #000; border-top-color: #FFF; border-left-color: #FFF; border-right-color: #555; border-bottom-color: #555; padding: 30px; width: 320px; text-align: center; }
-        .status-box { margin-bottom: 20px; font-size: 1rem; color: #333; }
-        #status-text { color: #00AA00; font-weight: bold; }
-        .mc-button { background-color: #6E6E6E; border: 2px solid #000; border-top-color: #FFF; border-left-color: #FFF; border-right-color: #333; border-bottom-color: #333; color: #E0E0E0; padding: 15px; font-size: 1.1rem; cursor: pointer; width: 100%; font-family: 'Minecraftia', sans-serif; }
-        .mc-button:hover { background-color: #7E7E7E; color: #FFFF55; }
-        .mc-button:active { border-top-color: #333; border-left-color: #333; border-right-color: #FFF; border-bottom-color: #FFF; }
+        body {
+            /* 💡 這裡使用了麥塊風格的風景背景圖 */
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
+                        url('https://wallpaperaccess.com/full/112668.jpg');
+            background-size: cover;
+            background-position: center;
+            color: #AAAAAA;
+            font-family: 'Minecraftia', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        h1 {
+            color: #FFFFFF;
+            text-shadow: 4px 4px #3F3F3F;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            background-color: rgba(198, 198, 198, 0.9); /* 半透明經典灰色 */
+            border: 4px solid #000;
+            border-top-color: #FFF;
+            border-left-color: #FFF;
+            border-right-color: #555;
+            border-bottom-color: #555;
+            padding: 40px;
+            width: 350px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .status-box {
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        #status-text {
+            color: #00AA00;
+            text-shadow: 1px 1px #AAFFAA;
+        }
+
+        .mc-button {
+            background-color: #6E6E6E;
+            border: 2px solid #000;
+            border-top-color: #FFF;
+            border-left-color: #FFF;
+            border-right-color: #333;
+            border-bottom-color: #333;
+            color: #E0E0E0;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 100%;
+            font-family: 'Minecraftia', sans-serif;
+        }
+
+        .mc-button:hover {
+            background-color: #7E7E7E;
+            color: #FFFF55;
+        }
+
+        .mc-button:active {
+            border-top-color: #333;
+            border-left-color: #333;
+            border-right-color: #FFF;
+            border-bottom-color: #FFF;
+        }
+        
+        .version {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #FFF;
+            text-shadow: 1px 1px #000;
+        }
     </style>
 </head>
 <body>
@@ -24,12 +97,49 @@
         <div class="status-box">
             數據開放狀態: <span id="status-text">已連線</span>
         </div>
-        <a href="https://client.falixnodes.net/server/2612801/start" target="_blank" style="text-decoration: none;">
-            <button class="mc-button">啟動伺服器</button>
-        </a>
+
+        <button class="mc-button" onclick="launchServer()">啟動伺服器</button>
     </div>
 
-    <p style="margin-top: 20px; font-size: 0.7rem;">※ 點擊後會開啟 Falix 分頁自動執行開機</p>
+    <div class="version">系統版本：V5.0 (GitHub 衛星連線)</div>
 
+    <script>
+        async function launchServer() {
+            const btn = document.querySelector('.mc-button');
+            const status = document.getElementById('status-text');
+            
+            btn.innerText = "傳送請求中...";
+            btn.disabled = true;
+
+            // 💡 這裡記得填入你自己的資訊
+            const OWNER = "ryfn1998-hash"; 
+            const REPO = "my-serve";
+            const TOKEN = "你的GitHub_Token"; 
+
+            try {
+                const response = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/dispatches`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify({ event_type: 'start-command' })
+                });
+
+                if (response.ok) {
+                    status.innerText = "啟動指令已送出";
+                    status.style.color = "#FFFF55";
+                    btn.innerText = "啟動成功！";
+                } else {
+                    throw new Error();
+                }
+            } catch (error) {
+                status.innerText = "連線失敗";
+                status.style.color = "#FF5555";
+                btn.innerText = "重試啟動";
+                btn.disabled = false;
+            }
+        }
+    </script>
 </body>
 </html>
