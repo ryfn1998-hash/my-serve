@@ -7,9 +7,9 @@ jobs:
   start_server:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Falix
+      - name: Trigger Falix External Start
         run: |
-          # 使用更完整的標頭來模擬真實訪問
-          curl -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
-               -e "https://www.google.com" \
+          # 使用強力模擬模式 (使用 -L 跟隨轉址, -A 模擬 Chrome 瀏覽器, -e 偽裝來源網頁)
+          curl -L -v -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36" \
+               -e "https://falixnodes.net/" \
                "${{ secrets.START_URL }}"
