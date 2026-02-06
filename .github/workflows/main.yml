@@ -1,10 +1,12 @@
 name: StarRiver_AutoStart
 on:
   repository_dispatch:
-    types: [start-command]
+    types: [start-command] # 這裡要跟網頁代碼的 start-command 一致
+
 jobs:
   start_server:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Falix
-        run: curl -s "${{ secrets.START_URL }}"
+      - name: Send Start Request to Falix
+        run: |
+          curl -X GET "${{ secrets.START_URL }}"
