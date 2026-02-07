@@ -8,60 +8,53 @@
         .mc-container { background-color: #333333; border: 4px solid #000000; padding: 30px; text-align: center; width: 380px; box-shadow: inset -4px -4px #1e1e1e, inset 4px 4px #555555; }
         h2 { color: #FFFFFF; text-shadow: 2px 2px #3F3F3F; }
         .mc-btn { background-color: #AAAAAA; border: 2px solid #000000; color: #3F3F3F; padding: 12px; font-size: 18px; cursor: pointer; width: 100%; box-shadow: inset -4px -4px #555555, inset 4px 4px #DDDDDD; }
-        .mc-btn:hover { background-color: #bcbec0; color: #FFFFFF; }
-        .mc-btn:disabled { background-color: #555555; cursor: not-allowed; }
-        #status { margin-top: 20px; font-size: 14px; color: #55FF55; text-shadow: 1px 1px #003300; }
+        .mc-btn:active { transform: translateY(2px); box-shadow: inset 4px 4px #555555; }
+        #status { margin-top: 20px; font-size: 14px; color: #55FF55; }
     </style>
 </head>
 <body>
-
-<div class="mc-container">
-    <h2>星河伺服器管理</h2>
-    <p>目標：ryfn.falix.gg</p>
-    <button class="mc-btn" id="start-btn" onclick="triggerLaunch()">啟動伺服器</button>
-    <div id="status">系統就緒</div>
-</div>
+    <div class="mc-container">
+        <h2>星河伺服器管理</h2>
+        <p>目標：ryfn.falix.gg</p>
+        <button class="mc-btn" id="start-btn" onclick="triggerLaunch()">啟動伺服器</button>
+        <div id="status">等待指令...</div>
+    </div>
 
 <script>
     async function triggerLaunch() {
         const status = document.getElementById('status');
-        const btn = document.getElementById('start-btn');
+        // --- 請確認這三項，Token 不要漏掉任何一個字 ---
+        const TOKEN = "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"; 
+        const USER = "ryfn1998-hash";
+        const REPO = "my-serve";
+        // ------------------------------------------
 
-        // --- 這裡請務必填寫正確，不要刪掉雙引號 ---
-        const GITHUB_TOKEN = "你的_ghp_開頭的Token"; 
-        const REPO_OWNER = "ryfn1998-hash";
-        const REPO_NAME = "my-serve";
-        // ---------------------------------------
-
-        status.innerText = "正在傳送指令...";
+        status.innerText = "正在連線 GitHub...";
         status.style.color = "#FFFF55";
-        btn.disabled = true;
 
         try {
-            const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/dispatches`;
-            const response = await fetch(url, {
+            const resp = await fetch(`https://api.github.com/repos/${USER}/${REPO}/dispatches`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${GITHUB_TOKEN}`, // 這裡改用 Bearer 格式更穩定
+                    'Authorization': `Bearer ${TOKEN}`,
                     'Accept': 'application/vnd.github.v3+json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ event_type: "launch-server" })
             });
 
-            if (response.status === 204) {
-                status.innerText = "成功！後台已開始處理開服。";
+            if (resp.status === 204) {
+                status.innerText = "成功！指令已進入後台。";
                 status.style.color = "#55FF55";
             } else {
-                const data = await response.json().catch(() => ({}));
-                status.innerText = `錯誤: ${response.status} - ${data.message || '請檢查Token權限'}`;
+                const data = await resp.json().catch(() => ({}));
+                status.innerText = `失敗 (${resp.status}): ${data.message || '權限不足'}`;
                 status.style.color = "#FF5555";
-                btn.disabled = false;
+                console.log("錯誤詳情:", data);
             }
-        } catch (error) {
-            status.innerText = "連線失敗: 請確認網址或Token正確";
+        } catch (e) {
+            status.innerText = "連線超時：請確認網路或 Token。";
             status.style.color = "#FF5555";
-            btn.disabled = false;
         }
     }
 </script>
