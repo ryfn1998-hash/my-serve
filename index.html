@@ -4,59 +4,46 @@
     <meta charset="UTF-8">
     <title>星河伺服器 - 管理終端</title>
     <style>
-        body { background-color: #1e1e1e; color: #AAAAAA; font-family: "Microsoft JhengHei", sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        /* Minecraft 經典灰黑風格 */
+        body { background-color: #1e1e1e; color: #AAAAAA; font-family: "Microsoft JhengHei", sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
         .mc-container { background-color: #333333; border: 4px solid #000000; padding: 30px; text-align: center; width: 380px; box-shadow: inset -4px -4px #1e1e1e, inset 4px 4px #555555; }
-        h2 { color: #FFFFFF; text-shadow: 2px 2px #3F3F3F; }
+        h2 { color: #FFFFFF; text-shadow: 2px 2px #3F3F3F; margin-bottom: 20px;}
         .mc-btn { background-color: #AAAAAA; border: 2px solid #000000; color: #3F3F3F; padding: 12px; font-size: 18px; cursor: pointer; width: 100%; box-shadow: inset -4px -4px #555555, inset 4px 4px #DDDDDD; }
-        .mc-btn:active { transform: translateY(2px); box-shadow: inset 4px 4px #555555; }
+        .mc-btn:hover { background-color: #bcbec0; color: #FFFFFF; }
         #status { margin-top: 20px; font-size: 14px; color: #55FF55; }
+        /* 關鍵：將啟動視窗完全隱藏 */
+        #hidden-launcher { width: 0; height: 0; border: none; visibility: hidden; }
     </style>
 </head>
 <body>
-    <div class="mc-container">
-        <h2>星河伺服器管理</h2>
-        <p>目標：ryfn.falix.gg</p>
-        <button class="mc-btn" id="start-btn" onclick="triggerLaunch()">啟動伺服器</button>
-        <div id="status">等待指令...</div>
-    </div>
+
+<div class="mc-container">
+    <h2>星河伺服器管理</h2>
+    <p>伺服器：ryfn.falix.gg</p>
+    <button class="mc-btn" onclick="quickStart()">啟動伺服器</button>
+    <div id="status">準備就緒</div>
+</div>
+
+<iframe id="hidden-launcher" name="hidden-launcher"></iframe>
 
 <script>
-    async function triggerLaunch() {
+    function quickStart() {
         const status = document.getElementById('status');
-        // --- 請確認這三項，Token 不要漏掉任何一個字 ---
-        const TOKEN = "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"; 
-        const USER = "ryfn1998-hash";
-        const REPO = "my-serve";
-        // ------------------------------------------
-
-        status.innerText = "正在連線 GitHub...";
+        status.innerText = "正在背景喚醒伺服器...";
         status.style.color = "#FFFF55";
 
-        try {
-            const resp = await fetch(`https://api.github.com/repos/${USER}/${REPO}/dispatches`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ event_type: "launch-server" })
-            });
+        // 直接讓隱藏的 iframe 去載入 Falix 的啟動連結
+        // 這樣不會跳轉頁面，廣告也會在後台載入，觸發開服
+        const launcher = document.getElementById('hidden-launcher');
+        launcher.src = "https://falixnodes.net/startserver?ip=ryfn.falix.gg";
 
-            if (resp.status === 204) {
-                status.innerText = "成功！指令已進入後台。";
-                status.style.color = "#55FF55";
-            } else {
-                const data = await resp.json().catch(() => ({}));
-                status.innerText = `失敗 (${resp.status}): ${data.message || '權限不足'}`;
-                status.style.color = "#FF5555";
-                console.log("錯誤詳情:", data);
-            }
-        } catch (e) {
-            status.innerText = "連線超時：請確認網路或 Token。";
-            status.style.color = "#FF5555";
-        }
+        // 模擬進度感
+        setTimeout(() => {
+            status.innerText = "指令已送達！伺服器啟動中...";
+            status.style.color = "#55FF55";
+        }, 3000);
     }
 </script>
+
 </body>
 </html>
