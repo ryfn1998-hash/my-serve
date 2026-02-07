@@ -1,17 +1,14 @@
-name: Auto Start Falix Server
-
+name: 自動啟動伺服器
 on:
   repository_dispatch:
-    types: [start-command]
+    types: [launch-server] # 接收來自網頁按鈕的訊號
 
 jobs:
-  start_server:
+  start:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger FalixNodes API
+      - name: 執行自動化開服腳本
         run: |
-          curl -X POST "https://client.falixnodes.net/api/client/servers/2612801/power" \
-          -H "Authorization: Bearer ${{ secrets.FALIX_TOKEN }}" \
-          -H "Content-Type: application/json" \
-          -H "Accept: application/json" \
-          -d '{"signal": "start"}'
+          # 這裡就是跑 Python 模擬瀏覽器開服
+          # 使用 curl 模擬請求，因為 GitHub Actions 伺服器 IP 穩定
+          curl -L "https://falixnodes.net/startserver?ip=ryfn.falix.gg"
