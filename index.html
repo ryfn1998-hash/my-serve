@@ -2,68 +2,30 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>星河伺服器 - 啟動終端</title>
+    <title>星河伺服器 - 終端</title>
     <style>
-        /* Minecraft 經典像素風格 */
-        body {
-            background-color: #1e1e1e;
-            color: #AAAAAA;
-            font-family: "Microsoft JhengHei", sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .mc-container {
-            background-color: #333333;
-            border: 4px solid #000000;
-            padding: 30px;
-            text-align: center;
-            width: 380px;
-            box-shadow: inset -4px -4px #1e1e1e, inset 4px 4px #555555;
-        }
-        h2 { color: #FFFFFF; text-shadow: 2px 2px #3F3F3F; margin-bottom: 20px;}
-        .mc-btn {
-            background-color: #AAAAAA;
-            border: 2px solid #000000;
-            color: #3F3F3F;
-            padding: 12px;
-            font-size: 18px;
-            cursor: pointer;
-            width: 100%;
-            box-shadow: inset -4px -4px #555555, inset 4px 4px #DDDDDD;
-        }
-        .mc-btn:hover { background-color: #bcbec0; color: #FFFFFF; }
-        #status { margin-top: 20px; color: #55FF55; font-size: 14px; text-shadow: 1px 1px #003300;}
+        body { background-color: #1e1e1e; color: #AAAAAA; font-family: "Microsoft JhengHei", sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .mc-container { background-color: #333333; border: 4px solid #000000; padding: 30px; text-align: center; width: 350px; box-shadow: inset -4px -4px #1e1e1e, inset 4px 4px #555555; }
+        h2 { color: #FFFFFF; text-shadow: 2px 2px #3F3F3F; }
+        .mc-btn { background-color: #AAAAAA; border: 2px solid #000000; color: #3F3F3F; padding: 12px; font-size: 18px; cursor: pointer; width: 100%; box-shadow: inset -4px -4px #555555, inset 4px 4px #DDDDDD; }
+        .mc-btn:active { box-shadow: inset 4px 4px #555555, inset -4px -4px #DDDDDD; }
+        #status { margin-top: 20px; color: #FFFF55; font-size: 14px; }
     </style>
 </head>
 <body>
 
 <div class="mc-container">
-    <h2>星河伺服器管理</h2>
-    <p>伺服器：ryfn.falix.gg</p>
-    <button class="mc-btn" onclick="silentLaunch()">啟動伺服器</button>
+    <h2>星河伺服器</h2>
+    <p>ryfn.falix.gg</p>
+    <button class="mc-btn" onclick="launch()">啟動伺服器</button>
     <div id="status">準備就緒</div>
 </div>
 
 <script>
-    function silentLaunch() {
-        const status = document.getElementById('status');
-        status.innerText = "正在後台傳送請求...";
-        status.style.color = "#FFFF55";
-
-        // 使用「非同步請求」嘗試在背景連線
-        // 注意：這通常會被 Falix 的 CORS 政策阻擋
-        fetch("https://falixnodes.net/startserver?ip=ryfn.falix.gg", {
-            mode: 'no-cors' 
-        }).then(() => {
-            status.innerText = "啟動指令已送出！";
-            status.style.color = "#55FF55";
-        }).catch(() => {
-            status.innerText = "背景啟動受阻，請參考下方說明。";
-            status.style.color = "#FF5555";
-        });
+    function launch() {
+        document.getElementById('status').innerText = "引導至驗證頁面...";
+        // 直接在目前分頁跳轉，讓 Falix 處理廣告並啟動
+        window.location.href = "https://falixnodes.net/startserver?ip=ryfn.falix.gg";
     }
 </script>
 
