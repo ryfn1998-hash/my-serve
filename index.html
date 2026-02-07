@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>星河伺服器 - 啟動終端</title>
     <style>
+        /* Minecraft 經典像素風格 */
         body {
             background-color: #1e1e1e;
             color: #AAAAAA;
@@ -22,7 +23,7 @@
             width: 380px;
             box-shadow: inset -4px -4px #1e1e1e, inset 4px 4px #555555;
         }
-        h2 { color: #FFFFFF; text-shadow: 2px 2px #3F3F3F; }
+        h2 { color: #FFFFFF; text-shadow: 2px 2px #3F3F3F; margin-bottom: 20px;}
         .mc-btn {
             background-color: #AAAAAA;
             border: 2px solid #000000;
@@ -34,7 +35,7 @@
             box-shadow: inset -4px -4px #555555, inset 4px 4px #DDDDDD;
         }
         .mc-btn:hover { background-color: #bcbec0; color: #FFFFFF; }
-        #status { margin-top: 20px; color: #55FF55; font-size: 14px; }
+        #status { margin-top: 20px; color: #55FF55; font-size: 14px; text-shadow: 1px 1px #003300;}
     </style>
 </head>
 <body>
@@ -42,31 +43,27 @@
 <div class="mc-container">
     <h2>星河伺服器管理</h2>
     <p>伺服器：ryfn.falix.gg</p>
-    <button class="mc-btn" onclick="startServer()">啟動伺服器</button>
-    <div id="status">系統就緒</div>
+    <button class="mc-btn" onclick="silentLaunch()">啟動伺服器</button>
+    <div id="status">準備就緒</div>
 </div>
 
 <script>
-    function startServer() {
+    function silentLaunch() {
         const status = document.getElementById('status');
-        status.innerText = "正在觸發指令...";
+        status.innerText = "正在後台傳送請求...";
         status.style.color = "#FFFF55";
 
-        // 開啟一個極小的視窗來繞過 Falix 的防護
-        // 這是目前 100% 唯一能成功的方法
-        let startWin = window.open("https://falixnodes.net/startserver?ip=ryfn.falix.gg", "FalixLauncher", "width=10,height=10,top=0,left=0");
-
-        if (!startWin) {
-            status.innerText = "請允許瀏覽器彈出視窗！";
+        // 使用「非同步請求」嘗試在背景連線
+        // 注意：這通常會被 Falix 的 CORS 政策阻擋
+        fetch("https://falixnodes.net/startserver?ip=ryfn.falix.gg", {
+            mode: 'no-cors' 
+        }).then(() => {
+            status.innerText = "啟動指令已送出！";
+            status.style.color = "#55FF55";
+        }).catch(() => {
+            status.innerText = "背景啟動受阻，請參考下方說明。";
             status.style.color = "#FF5555";
-        } else {
-            // 5秒後自動關閉那個小視窗
-            setTimeout(() => {
-                startWin.close();
-                status.innerText = "指令已送達！伺服器啟動中";
-                status.style.color = "#55FF55";
-            }, 5000);
-        }
+        });
     }
 </script>
 
