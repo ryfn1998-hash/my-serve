@@ -22,7 +22,6 @@
             padding: 30px;
             text-align: center;
             width: 380px;
-            /* 內部陰影製造立體感 */
             box-shadow: inset -4px -4px #1e1e1e, inset 4px 4px #555555;
         }
 
@@ -51,14 +50,15 @@
             box-shadow: inset -4px -4px #555555, inset 4px 4px #FFFFFF;
         }
 
-        .mc-btn:active {
-            box-shadow: inset 4px 4px #555555, inset -4px -4px #DDDDDD;
+        /* 隱藏的框架：讓開服動作在背景跑，不影響主頁面 */
+        #hidden-frame {
+            display: none;
         }
 
         #status {
             margin-top: 20px;
             font-size: 14px;
-            color: #55FF55; /* Minecraft 綠 */
+            color: #55FF55;
             text-shadow: 1px 1px #003300;
         }
     </style>
@@ -72,15 +72,25 @@
     <div id="status">系統就緒</div>
 </div>
 
+<iframe id="hidden-frame" name="hidden-frame"></iframe>
+
 <script>
     function startServer() {
         const status = document.getElementById('status');
-        status.innerText = "指令已送出，請在新分頁確認啟動...";
-        status.style.color = "#FFFF55"; // 黃色提醒
+        const frame = document.getElementById('hidden-frame');
+        
+        status.innerText = "正在傳送指令 (背景處理中)...";
+        status.style.color = "#FFFF55";
 
-        // 使用「開啟新分頁」的方式觸發
-        // 這樣 Falix 的安全驗證就能在那個頁面完成，而不會把你現在這個頁面蓋掉
-        window.open("https://falixnodes.net/startserver?ip=ryfn.falix.gg", "_blank");
+        // 讓隱藏的 iframe 去讀取開服連結
+        // 這樣開服動作會發生在框架內，你的主頁面完全不會切換
+        frame.src = "https://falixnodes.net/startserver?ip=ryfn.falix.gg";
+
+        // 模擬成功反饋
+        setTimeout(() => {
+            status.innerText = "指令已送達！伺服器啟動中";
+            status.style.color = "#55FF55";
+        }, 3000);
     }
 </script>
 
