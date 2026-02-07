@@ -2,108 +2,85 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>星河伺服器管理終端</title>
+    <title>星河伺服器 - 啟動終端</title>
     <style>
+        /* Minecraft 經典像素風格 */
         body {
-            background-color: #0d0d0d;
+            background-color: #1e1e1e;
+            color: #AAAAAA;
+            font-family: "Minecraft", "Microsoft JhengHei", sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            font-family: "Microsoft JhengHei", sans-serif;
         }
 
-        /* 登入介面邊框：紫色霓虹流動效果 */
-        .login-box {
-            position: relative;
-            padding: 40px;
-            background: #1a1a1a;
-            border-radius: 15px;
-            color: white;
+        .mc-container {
+            background-color: #333333;
+            border: 4px solid #000000;
+            padding: 30px;
             text-align: center;
-            width: 350px;
-            overflow: hidden;
+            width: 380px;
+            /* 內部陰影製造立體感 */
+            box-shadow: inset -4px -4px #1e1e1e, inset 4px 4px #555555;
         }
 
-        .login-box::before {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: conic-gradient(transparent, transparent, transparent, #bc13fe);
-            animation: rotate 4s linear infinite;
-            z-index: 1;
+        h2 {
+            color: #FFFFFF;
+            text-shadow: 2px 2px #3F3F3F;
+            margin-bottom: 20px;
         }
 
-        .login-box::after {
-            content: '';
-            position: absolute;
-            inset: 4px;
-            background: #1a1a1a;
-            border-radius: 12px;
-            z-index: 2;
-        }
-
-        .content {
-            position: relative;
-            z-index: 3;
-        }
-
-        @keyframes rotate {
-            100% { transform: rotate(360deg); }
-        }
-
-        button {
-            background: transparent;
-            border: 2px solid #bc13fe;
-            color: #bc13fe;
-            padding: 12px 24px;
+        /* Minecraft 灰按鈕 */
+        .mc-btn {
+            background-color: #AAAAAA;
+            border: 2px solid #000000;
+            color: #3F3F3F;
+            padding: 12px;
             font-size: 18px;
-            border-radius: 5px;
             cursor: pointer;
-            transition: 0.3s;
-            text-shadow: 0 0 8px #bc13fe;
-            box-shadow: 0 0 10px #bc13fe;
+            width: 100%;
+            box-shadow: inset -4px -4px #555555, inset 4px 4px #DDDDDD;
+            transition: all 0.1s;
         }
 
-        button:hover {
-            background: #bc13fe;
-            color: white;
-            box-shadow: 0 0 25px #bc13fe;
+        .mc-btn:hover {
+            background-color: #bcbec0;
+            color: #FFFFFF;
+            box-shadow: inset -4px -4px #555555, inset 4px 4px #FFFFFF;
         }
 
-        #status-text {
+        .mc-btn:active {
+            box-shadow: inset 4px 4px #555555, inset -4px -4px #DDDDDD;
+        }
+
+        #status {
             margin-top: 20px;
             font-size: 14px;
-            color: #888;
+            color: #55FF55; /* Minecraft 綠 */
+            text-shadow: 1px 1px #003300;
         }
     </style>
 </head>
 <body>
 
-<div class="login-box">
-    <div class="content">
-        <h2>星河伺服器</h2>
-        <p>控制台終端</p>
-        <button onclick="launchServer()">立即啟動伺服器</button>
-        <div id="status-text">等待指令中...</div>
-    </div>
+<div class="mc-container">
+    <h2>星河伺服器管理</h2>
+    <p>伺服器：ryfn.falix.gg</p>
+    <button class="mc-btn" onclick="startServer()">啟動伺服器</button>
+    <div id="status">系統就緒</div>
 </div>
 
 <script>
-    function launchServer() {
-        const status = document.getElementById('status-text');
-        status.innerText = "正在導向 Falix 驗證並啟動...";
-        status.style.color = "#bc13fe";
+    function startServer() {
+        const status = document.getElementById('status');
+        status.innerText = "指令已送出，請在新分頁確認啟動...";
+        status.style.color = "#FFFF55"; // 黃色提醒
 
-        // 這是真正完全無誤的觸發方式：
-        // 1. 它會直接利用你瀏覽器已經登入 Falix 的狀態
-        // 2. 自動跳轉到 Falix 的啟動 API 頁面
-        // 3. 繞過所有 GitHub Token 權限問題
-        setTimeout(() => {
-            window.location.href = "https://falixnodes.net/startserver?ip=ryfn.falix.gg";
-        }, 1000);
+        // 使用「開啟新分頁」的方式觸發
+        // 這樣 Falix 的安全驗證就能在那個頁面完成，而不會把你現在這個頁面蓋掉
+        window.open("https://falixnodes.net/startserver?ip=ryfn.falix.gg", "_blank");
     }
 </script>
 
