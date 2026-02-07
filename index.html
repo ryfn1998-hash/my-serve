@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>星河伺服器 - 終端</title>
+    <title>星河伺服器 - 管理終端</title>
     <style>
         /* Minecraft 經典像素風格 */
         body {
@@ -50,6 +50,17 @@
             box-shadow: inset -4px -4px #555555, inset 4px 4px #FFFFFF;
         }
 
+        .mc-btn:active {
+            box-shadow: inset 4px 4px #555555, inset -4px -4px #DDDDDD;
+            transform: translateY(2px);
+        }
+
+        .mc-btn:disabled {
+            background-color: #555555;
+            cursor: not-allowed;
+            color: #888888;
+        }
+
         #status {
             margin-top: 20px;
             font-size: 14px;
@@ -62,41 +73,52 @@
 
 <div class="mc-container">
     <h2>星河伺服器管理</h2>
-    <p>伺服器：ryfn.falix.gg</p>
-    <button class="mc-btn" onclick="stealthLaunch()">啟動伺服器</button>
+    <p>目標：ryfn.falix.gg</p>
+    <button class="mc-btn" id="start-btn" onclick="triggerGitHubAction()">啟動伺服器</button>
     <div id="status">系統就緒</div>
 </div>
 
 <script>
-    function stealthLaunch() {
+    async function triggerGitHubAction() {
         const status = document.getElementById('status');
-        status.innerText = "正在連線後台...";
+        const btn = document.getElementById('start-btn');
+
+        // --- 這些就是你之前拿到的 Token 與資訊 ---
+        const GITHUB_TOKEN = "你的_GITHUB_TOKEN"; 
+        const REPO_OWNER = "你的GitHub使用者名稱";
+        const REPO_NAME = "你的專案名稱";
+        // ----------------------------------------
+
+        status.innerText = "發送指令至 GitHub 後台...";
         status.style.color = "#FFFF55";
+        btn.disabled = true;
 
-        // 1. 開啟一個位於螢幕外、極小的隱形視窗
-        // 這能騙過 Falix 的廣告偵測，同時不讓你感覺到跳轉
-        const startWin = window.open(
-            "https://falixnodes.net/startserver?ip=ryfn.falix.gg", 
-            "stealthWin", 
-            "width=1,height=1,left=10000,top=10000,menubar=no,status=no,toolbar=no"
-        );
+        try {
+            const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/dispatches`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    event_type: "launch-server" 
+                })
+            });
 
-        if (startWin) {
-            // 2. 視窗開啟後，立刻將焦點拉回主頁面
-            window.focus();
-            
-            status.innerText = "正在通過驗證...";
-            
-            // 3. 5秒後指令通常已送達，自動關閉該隱藏視窗
-            setTimeout(() => {
-                startWin.close();
-                status.innerText = "指令已送達！伺服器啟動中";
+            if (response.ok) {
+                status.innerText = "成功！GitHub 機器人已在背景開服";
                 status.style.color = "#55FF55";
-            }, 6000);
-        } else {
-            // 如果瀏覽器擋住彈窗，這就是為什麼沒動的原因
-            status.innerText = "請點擊網址列旁的「允許彈出視窗」";
+            } else {
+                const err = await response.json();
+                status.innerText = "連線失敗：" + (err.message || "請檢查 Token 權限");
+                status.style.color = "#FF5555";
+                btn.disabled = false;
+            }
+        } catch (error) {
+            status.innerText = "連線超時，請檢查網路狀態";
             status.style.color = "#FF5555";
+            btn.disabled = false;
         }
     }
 </script>
